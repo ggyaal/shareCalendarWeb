@@ -1148,6 +1148,7 @@ $(function(){
 	
 	function loadMessenger() {
 		var friend_modal = $(".friend-modal");
+		var friend_filter = $("#i998-user-fil-name");
 		var friendList = myFriends();
 
 		setTimeout(function(){
@@ -1162,10 +1163,22 @@ $(function(){
 					friend_modal.append("<div class='friend-' data-name='" + array.userid1 + "'>"
 										 + array.userid1 + "</div>"
 					);
+					var friendVO = whoisit(array.userid1);
+					setTimeout(function(){
+						friend_filter.append("<label class='checkbox-inline user-fil-name'><input class='filter' type='checkbox' data-id='" + friendVO.userid + "' value='" + friendVO.name + "' checked>"
+											+ friendVO.name + "</label>"
+						);
+					}, 100);
 				}else if(isFriend && array.userid2 != userid) {
 					friend_modal.append("<div class='friend-' data-name='" + array.userid2 + "'>"
 										 + array.userid2 + "</div>"
-					);	
+					);
+					var friendVO = whoisit(array.userid2);
+					setTimeout(function(){
+						friend_filter.append("<label class='checkbox-inline user-fil-name'><input class='filter' type='checkbox' data-id='" + friendVO.userid + "' value='" + friendVO.name + "' checked>"
+											+ friendVO.name + "</label>"
+						);
+					}, 100);
 				}
 			});
 			
@@ -1190,6 +1203,25 @@ $(function(){
 			}
 		});
 		return friendList;
+	}
+	function whoisit(userid) {
+		var friendVO = {};
+		$.ajax({
+			data		: {userid: userid},
+			dataType	: "json",
+			type		: "POST",
+			url			: 'mem/whoIsIt',
+			success		: function(data) {
+				friendVO.userid = data.userid;
+				friendVO.name = data.name;
+				friendVO.nickName = data.nickName;
+				friendVO.lv = data.lv;
+			},
+			beforeSend	: function(crsfToken){
+				crsfToken.setRequestHeader(tokenHeader, tokenValue);
+			}
+		});
+		return friendVO;
 	}
 	
 	function getContentId(objClass) {

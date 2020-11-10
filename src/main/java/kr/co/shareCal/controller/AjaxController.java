@@ -173,6 +173,18 @@ public class AjaxController {
 		
 		return planService.selectByIt(userid, "userid", startDate, endDate);
 	}
+
+	@RequestMapping(value = "user/memPlanByIt", produces="application/json;charset=UTF-8", method = RequestMethod.POST)
+	@ResponseBody
+	public List<MemberPlanVO> memberPlanByIt(@RequestParam("it") String it, @RequestParam("whatIt") String whatIt,
+			@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@RequestParam("startDate") LocalDateTime startDate,
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	@RequestParam("endDate") LocalDateTime endDate, Model model) {
+		logger.info("memPlan 호출 : (" + whatIt + ")" + it + "(" + startDate + " ~ " + endDate + ")");
+		
+		return planService.selectByIt(it, whatIt, startDate, endDate);
+	}
 	
 	@RequestMapping(value = "user/updatePlan", produces = "text/plain;charset=UTF-8", method = RequestMethod.POST)
 	@ResponseBody

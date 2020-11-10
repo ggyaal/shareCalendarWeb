@@ -93,6 +93,25 @@
 
 	<!-- Containers -->
 	<div id="containers" class="hide-it">
+		<div class="container-i" id="i999-basic-fil-name">
+			<label class="checkbox-inline basic-fil-name"><input class='filter' type="checkbox" value="정연" checked>정연</label>
+			<label class="checkbox-inline basic-fil-name"><input class='filter'type="checkbox" value="다현" checked>다현</label>
+			<label class="checkbox-inline basic-fil-name"><input class='filter' type="checkbox" value="사나" checked>사나</label>
+			<label class="checkbox-inline basic-fil-name"><input class='filter' type="checkbox" value="나연" checked>나연</label>
+			<label class="checkbox-inline basic-fil-name"><input class='filter' type="checkbox" value="지효" checked>지효</label>
+		</div>
+		<div class="container-i" id="i998-user-fil-category">
+			<select class="filter" id="type_filter" multiple="multiple">
+				<option value="카테고리1">카테고리1</option>
+				<option value="카테고리2">카테고리2</option>
+				<option value="카테고리3">카테고리3</option>
+				<option value="카테고리4">카테고리4</option>
+			</select>
+		</div>
+		<div class="container-i" id="i998-user-fil-name">
+			<label class="checkbox-inline user-fil-name"><input id="user-fil-name-self" class='filter' type="checkbox" data-id='${vo.userid }' value="${vo.name }" checked>${vo.name }</label>
+		</div>
+	
 		<div class="container-m" id="m999-calContainer">
 			<!-- 일자 클릭시 메뉴오픈 -->
 			<div id="contextMenu" class="dropdown clearfix only-user">
@@ -126,31 +145,13 @@
 							<button type="button" class="filterMove hide-it">필터이동</button>
 							<button type="button" class="filterScroll hide-it">따라다니기</button>
 						</span>
-						<div class="input-group">
-							<select class="filter" id="type_filter" multiple="multiple">
-								<option value="카테고리1">카테고리1</option>
-								<option value="카테고리2">카테고리2</option>
-								<option value="카테고리3">카테고리3</option>
-								<option value="카테고리4">카테고리4</option>
-							</select>
+						<div class="input-group" id="cal-filter-category">
 						</div>
 					</div>
 		
 					<div class="col-lg-6 w-full">
 						<label for="calendar_view">등록자별</label>
-						<div class="input-group">
-							<label class="checkbox-inline"><input class='filter'
-								type="checkbox" value="정연" checked>정연</label> <label
-								class="checkbox-inline"><input class='filter'
-								type="checkbox" value="다현" checked>다현</label> <label
-								class="checkbox-inline"><input class='filter'
-								type="checkbox" value="사나" checked>사나</label> <label
-								class="checkbox-inline"><input class='filter'
-								type="checkbox" value="나연" checked>나연</label> <label
-								class="checkbox-inline"><input class='filter'
-								type="checkbox" value="지효" checked>지효</label> <label
-								class="checkbox-inline"><input class='filter'
-								type="checkbox" value="${vo.name }" checked>${vo.name }</label>
+						<div class="input-group" id="cal-filter-name">
 						</div>
 					</div>
 				</div>
