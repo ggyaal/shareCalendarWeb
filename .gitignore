@@ -1,0 +1,12 @@
+target/
+.classpath
+.project
+.springBeans
+.tern-project
+do.txt
+.dbeaver/
+.settings/
+src/main/resources/db.properties
+src/main/resources/email.properties
+java/kr/co/shareCal/TestMain.java
+src/test/resources/log4j.xml

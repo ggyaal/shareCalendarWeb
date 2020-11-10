@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shareCal.dao.FriendDAO">
+	<!-- 조회 -->
+	<select id="selectById" parameterType="string" resultType="FriendVO">
+		select * from friend_tbl where userid1=#{userid} or userid2=#{userid}
+	</select>
+	<select id="selectById2" parameterType="FriendVO" resultType="FriendVO">
+		select * from friend_tbl where userid1=#{userid1} and userid2=#{userid2}
+	</select>
+	<!-- 저장 -->
+	<insert id="insert" parameterType="FriendVO">
+		insert into friend_tbl (userid1, userid2, alert2, relationship1) values (#{userid1}, #{userid2}, #{alert2}, 1)
+	</insert>
+	<!-- 수정 -->
+	<update id="update" parameterType="FriendVO">
+		update friend_tbl
+		<set>
+			<if test="alert1!=null">alert1=#{alert1},</if>
+			<if test="alert2!=null">alert2=#{alert2},</if>
+			<if test="relationship1!=null">relationship1=#{relationship1},</if>
+			<if test="relationship2!=null">relationship2=#{relationship2}</if>
+		</set>
+		 where userid1=#{userid1} and userid2=#{userid2} 
+	</update>
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="FriendVO">
+		delete friend_tbl where userid1=#{userid1} and userid2=#{userid2}
+	</delete>
+	
+</mapper>

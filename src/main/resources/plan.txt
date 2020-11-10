@@ -1,0 +1,181 @@
+-- 일정을 공유할 수 있는 웹사이트
+
+1. 프로젝트 기본 정보
+	- 로그인을 통해 사용자 인증을 받고, 사용자간의 일정 데이터를 공유하는 웹사이트
+
+2. 데이터 테이블
+	- member_tbl										// 회원 테이블
+		-userid : varchar2(20) primary key
+		-password : varchar2(80) not null
+		-name : varchar2(10) not null
+		-nickname : varchar2(10) unique not null // 중복 불가
+		-LV : number default 0 // 레벨
+		-enabled : number default 1 // 계정 활성/비활성화
+		
+	- friend_tbl										// 친구관계 테이블
+		- userid1 : varchar2(20)
+		- userid2 : varchar2(20)
+		- alert1 : varchar2(50)							// userid1의 친구의 대한 알림
+		- alert2 : varchar2(50)
+		- relationship1 : number default 0 				// 친구대기, 친구, 절친
+		- relationship2 : number default 0 				// 둘 중 작은 값이 적용
+		- primary key(userid1, userid2)
+	
+	- member_plan										// 일정 데이터 테이블
+		-id : number primary key						// 일정 고유번호
+		-userid : varchar2(20) foreign key
+		-title : varchar2(20) not null					// 제목
+		-description : varchar2(2000)					// 내용
+		-start : timestamp not null						// 일정시작
+		-end : timestamp not null						// 일정끝
+		-type : varchar2(10) not null					// 카테고리
+		-name : varchar2(20) not null					// 이름 
+		-nickName : varchar2(20) not null				// 닉네임 
+		-backgroundColor : varchar2(10)					// 배경색
+		-textColor : varchar2(10)						// 글자색
+		-allDay : char(1)								// 하루종일 (int타입은 null 값이 0이기 때문에 문자로 받음)
+		-disclosed : varchar2(15) not null 				//"public", "part-pub", "private" 모두 공개, 일부 공개, 비공개
+	
+	-membercode_tbl										// 회원 정보 테이블
+		-userid varchar2(20) foreign key
+		-gender char(1) not null
+		-phoneNo varchar2(20)
+		-birth date
+		-photo varchar2(100)					// 프로필 사진 ( 미니 프로필 사진은 thumb_ -> min_을 붙힌다.)
+		-zipcode varchar2(100)
+		-addr1 varchar2(50)
+		-addr2 varchar2(50)
+		-regDate date not null
+	
+	-authoritycode_tbl							// 인증코드를 저장하는 테이블
+		-userid varchar2(20) foreign key, primary key
+		-codeNo number primary key // 1= 이메일인증, 2= 비밀번호 찾기, 3= 임시비밀번호(isPass)
+		-authcode varchar(50) not null // 무작위 코드 저장
+		-wCount number default 0 // 틀린 횟수
+		-primary key(userid, codeNo)
+	
+	-member_authority							// 접근제한 테이블
+		-userid varchar2(20) foreign key
+		-auth varchar(20) not null // 인증x, 인증o, MVP, 운영자, 관리자  {"ROLE_NONE", "ROLE_USER", "ROLE_MVP", "ROLE_MEMBER", "ROLE_ADMIN"}
+		
+	-member_sortable
+		-userid varchar2(20) foreign key, primary key
+		-block varchar2(10) primary key			// 02_1(block02_1)
+		-contents varchar2(100)					// m1(main1), p1(profile1), c2(content2) ...
+
+	-member_contents
+		-userid varchar2(20) foreign key, primary key
+		-content varchar2(10)					// m999, m998, p999, c998은 고정값
+		-cTitle varchar2(20) primary key		// 컨텐츠 제목
+		-cBody varchar2(2000)					// 컨텐츠 내용
+		-color varchar2(15)						// 컨텐츠 컬러
+		
+	-member_filter								// 캘린더 필터 테이블
+		-userid varchar2(20) foreign key, primary key
+		-categories varchar2(100)
+		-friends varchar2(100)
+		
+	-member-massages
+		-userid varchar2(20)
+		-senderid varchar2(20)
+		-content varchar2(2000)
+		-read number(0) default 0				// 안읽음, 읽음, 보관
+		
+		
+	
+3. 필요한 로직
+	-회원
+		-조회 // 전체 조회, id로 조회, name/nickname으로 조회
+		-등록
+		-수정 // rank 수정, nickName 수정, password 수정
+		-탈퇴
+	
+	-친구
+		-신청
+		-수정 // relationship 수정
+		-삭제 // relationship이 0일 경우 삭제
+
+	-일정
+		-추가
+		-수정
+		-삭제
+		
+-----------------------------------------------------------------------------
+SQL테이블(OracleDB)
+			member_tbl					●
+			membercode_tbl				●
+			member_plan					●
+			friend_tbl					●
+			authoritycode_tbl			●
+			member_authority			●
+	
+로직
+	properties
+				db.properties			●	DB정보
+				email.properties		●	Email정보
+				
+	Mapper
+				memberMapper			●
+				memberCodeMapper		●
+				memberPlanMapper		●
+				friendMapper			○
+	Class
+		controller
+				loginController			●
+				ajaxController			○
+				authController			○
+		
+		VO
+				MemberVO				●
+				MemberCodeVO			●
+				MemberPlanVO			●
+				SelectDateVO			●
+				FriendVO				●
+
+		DAO
+				MemberDAO				●	selectCount,  selectAll, selectById, selectByItem, insert, update, delete, 권한(insertAuth, updateAuth), 인증코드(insertAuthCode, selectAuthCode, deleteAuthCode)
+				MemberCodeDAO			●	selectById, insert, update
+				MemberPlanDAO			●	selectByIt, updateByIt, delete
+				FriendDAO				○
+		
+		service
+			member
+				MemberService			●
+				MemberCodeService		●	memberServiceImpl에서만 구현(Controller x)
+				MemberPlanService		●
+				FriendService			○
+				
+			security
+				LoginSuccessHandler		●	security 로그인 성공 시
+				MakeOTPCode				●	무작위 코드 발행 way( 1=무작위, 2=숫자만, 3=2개단어 )
+				
+			email
+				EmailService			●	Email 발송
+				
+			file
+				FileUploadUtil			○	파일 업로드
+				FileDownloadUtil		○	파일 다운로드
+				
+		configuration
+			dataType
+				LocalDateTimeConfig		●	DateType pattern (YYYY-MM-DD HH:mm:ss), (YYYY-MM-DD)
+		
+		handler
+			myBatis
+				MybatisDateTypeHandler	●	java.localDateTime <=> sql.timeStamp
+			
+	
+		
+-----------------------------------------------------------------------------
+참고 SOURCE
+
+	로그인 처리 - Spring security
+	캘린더 - full Calendar - (https://kutar37.tistory.com/entry/FullCalendar-%EC%98%88%EC%A0%9C%EB%8D%B0%EB%AA%A8)
+	화면 ui
+		login - https://colorlib.com/wp/template/login-form-v4/
+
+
+-----------------------------------------------------------------------------
+
+		
+		

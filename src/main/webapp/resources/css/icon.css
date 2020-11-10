@@ -1,0 +1,152 @@
+/*custom icon*/
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/*google icon class */
+@font-face {
+	font-family: 'Material Icons';
+	font-style: normal;
+	font-weight: 400;
+	src: url(path/to/MaterialIcons-Regular.eot);
+
+	/* For IE6-8 */
+	src: local('Material Icons'),
+	local('MaterialIcons-Regular'),
+	url(path/to/MaterialIcons-Regular.woff2) format('woff2'),
+	url(path/to/MaterialIcons-Regular.woff) format('woff'),
+	url(path/to/MaterialIcons-Regular.ttf) format('truetype'); 
+}
+.material-icons {
+	font-family: 'Material Icons';
+	font-weight: normal;
+	font-style: normal;
+	font-size: 40px;
+	
+	/* Preferred icon size */
+	display: inline-block;
+	line-height: 0;
+	text-transform: none;
+	letter-spacing: normal;
+	word-wrap: normal;
+	white-space: nowrap;
+	direction: ltr;
+	color: white;
+	cursor: pointer;
+	
+	/* Support for all WebKit browsers. */
+	-webkit-font-smoothing: antialiased;
+	
+	/* Support for Safari and Chrome. */
+	text-rendering: optimizeLegibility;
+	
+	/* Support for Firefox. */
+	-moz-osx-font-smoothing: grayscale;
+	
+	/* Support for IE. */
+	font-feature-settings: 'liga';
+	
+	/* Don't drag */
+	-ms-user-select: none;
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	user-select:none;
+	
+}
+
+/* icon-color */
+.i-cbk {color: black;}
+.i-cbl {color: blue;}
+.i-cr {color: red;}
+
+/* icon-size */
+.i-s-10 {font-size: 10px; }
+.i-s-11 {font-size: 11px; }
+.i-s-12 {font-size: 12px; }
+.i-s-13 {font-size: 13px; }
+.i-s-14 {font-size: 14px; }
+.i-s-15 {font-size: 15px; }
+.i-s-16 {font-size: 16px; }
+.i-s-17 {font-size: 17px; }
+.i-s-18 {font-size: 18px; }
+.i-s-19 {font-size: 19px; }
+.i-s-20 {font-size: 20px; }
+.i-s-21 {font-size: 21px; }
+.i-s-22 {font-size: 22px; }
+.i-s-23 {font-size: 23px; }
+.i-s-24 {font-size: 24px; }
+.i-s-25 {font-size: 25px; }
+.i-s-26 {font-size: 26px; }
+.i-s-27 {font-size: 27px; }
+.i-s-28 {font-size: 28px; }
+.i-s-29 {font-size: 29px; }
+.i-s-30 {font-size: 30px; }
+.i-s-31 {font-size: 31px; }
+.i-s-32 {font-size: 32px; }
+.i-s-33 {font-size: 33px; }
+.i-s-34 {font-size: 34px; }
+.i-s-35 {font-size: 35px; }
+.i-s-36 {font-size: 36px; }
+.i-s-37 {font-size: 37px; }
+.i-s-38 {font-size: 38px; }
+.i-s-39 {font-size: 39px; }
+.i-s-40 {font-size: 40px; }
+.i-s-41 {font-size: 41px; }
+.i-s-42 {font-size: 42px; }
+.i-s-43 {font-size: 43px; }
+.i-s-44 {font-size: 44px; }
+.i-s-45 {font-size: 45px; }
+.i-s-46 {font-size: 46px; }
+.i-s-47 {font-size: 47px; }
+.i-s-48 {font-size: 48px; }
+.i-s-49 {font-size: 49px; }
+.i-s-50 {font-size: 50px; }
+.i-s-51 {font-size: 51px; }
+.i-s-52 {font-size: 52px; }
+.i-s-53 {font-size: 53px; }
+.i-s-54 {font-size: 54px; }
+.i-s-55 {font-size: 55px; }
+.i-s-56 {font-size: 56px; }
+.i-s-57 {font-size: 57px; }
+.i-s-58 {font-size: 58px; }
+.i-s-59 {font-size: 59px; }
+.i-s-60 {font-size: 60px; }
+.i-s-61 {font-size: 61px; }
+.i-s-62 {font-size: 62px; }
+.i-s-63 {font-size: 63px; }
+.i-s-64 {font-size: 64px; }
+.i-s-65 {font-size: 65px; }
+.i-s-66 {font-size: 66px; }
+.i-s-67 {font-size: 67px; }
+.i-s-68 {font-size: 68px; }
+.i-s-69 {font-size: 69px; }
+.i-s-70 {font-size: 70px; }
+.i-s-70 {font-size: 71px; }
+.i-s-70 {font-size: 72px; }
+.i-s-70 {font-size: 73px; }
+.i-s-70 {font-size: 74px; }
+.i-s-70 {font-size: 75px; }
+.i-s-70 {font-size: 76px; }
+.i-s-70 {font-size: 77px; }
+.i-s-70 {font-size: 78px; }
+.i-s-70 {font-size: 79px; }
+.i-s-80 {font-size: 80px; }
+.i-s-81 {font-size: 81px; }
+.i-s-82 {font-size: 82px; }
+.i-s-83 {font-size: 83px; }
+.i-s-84 {font-size: 84px; }
+.i-s-85 {font-size: 85px; }
+.i-s-86 {font-size: 86px; }
+.i-s-87 {font-size: 87px; }
+.i-s-88 {font-size: 88px; }
+.i-s-89 {font-size: 89px; }
+.i-s-90 {font-size: 90px; }
+.i-s-91 {font-size: 91px; }
+.i-s-92 {font-size: 92px; }
+.i-s-93 {font-size: 93px; }
+.i-s-94 {font-size: 94px; }
+.i-s-95 {font-size: 95px; }
+.i-s-96 {font-size: 96px; }
+.i-s-97 {font-size: 97px; }
+.i-s-98 {font-size: 98px; }
+.i-s-99 {font-size: 99px; }
+.i-s-100 {font-size: 100px; }

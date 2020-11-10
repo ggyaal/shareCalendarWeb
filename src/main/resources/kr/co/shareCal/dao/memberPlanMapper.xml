@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shareCal.dao.MemberPlanDAO">
+	<!-- 조회 -->
+	<select id="selectByIt" parameterType="hashmap" resultType="MemberPlanVO">
+		select * from member_plan
+			<where>
+				<if test="userid!=null">userid=#{userid}</if>
+				<if test="name!=null">name=#{name}</if>
+				<if test="title!=null">title=#{title}</if>
+				<if test="nickName!=null">nickName=#{nickName}</if>
+				<if test="disclosed!=null">disclosed=#{disclosed}</if>
+				AND("start" <![CDATA[<=]]> #{start} AND "start" <![CDATA[<=]]> #{end} AND "end" <![CDATA[>=]]> #{start} AND "end" <![CDATA[>=]]> #{end}
+				OR "start" BETWEEN #{start} AND #{end}
+				OR "end" BETWEEN #{start} AND #{end}
+				)
+			</where>
+	</select>
+	<!-- 저장 -->
+	<insert id="insert" parameterType="MemberPlanVO">
+		insert into member_plan values (member_plan_id_seq.nextval, #{userid}, #{title}, #{description}, #{start}, #{end}, #{type}, #{name}, #{nickName}, #{backgroundColor}, #{textColor}, #{allDay}, #{disclosed})
+	</insert>
+	<!-- 수정 -->
+	<update id="updateByIt" parameterType="MemberPlanVO">
+		update member_plan
+			<set>
+				<if test="title!=null">title=#{title},</if>
+				<if test="description!=null">description=#{description},</if>
+				<if test="start!=null">"start"=#{start},</if>
+				<if test="end!=null">"end"=#{end},</if>
+				<if test="type!=null">type=#{type},</if>
+				<if test="backgroundColor!=null">backgroundColor=#{backgroundColor},</if>
+				<if test="textColor!=null">textColor=#{textColor},</if>
+				<if test="allDay!=null">allDay=#{allDay},</if>
+				<if test="disclosed!=null">disclosed=#{disclosed}</if>
+			</set>
+		where userid=#{userid} and id=#{id}
+	</update>
+	<!-- 삭제 -->
+	<delete id="delete" parameterType="hashmap">
+		delete member_plan where userid=#{userid} and id=#{id}
+	</delete>
+	
+</mapper>

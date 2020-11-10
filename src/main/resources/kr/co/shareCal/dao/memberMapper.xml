@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shareCal.dao.MemberDAO">
+	<!-- 모든 회원 조회 -->
+	<select id="selectCount" resultType="int">
+		select count(*) from member_tbl
+	</select>
+	<select id="selectAll" resultType="MemberVO">
+		select * from member_tbl
+	</select>
+	<!-- ID 조회 -->
+	<select id="selectById" parameterType="string" resultType="MemberVO">
+		select * from member_tbl where userid like '%${userid}%'
+	</select>
+	<!-- 전체 조회 -->
+	<select id="selectByAll" parameterType="string" resultType="MemberVO">
+		select * from member_tbl where userid like '%${item}%' or name like '%${item}%' or nickName like '%${item}%'
+	</select>
+	<!-- 부분 조회 -->
+	<select id="selectByItem" parameterType="hashmap" resultType="MemberVO">
+		select * from member_tbl
+		<where>
+			<if test="name!=null">name like '%${name}%'</if>
+			<if test="nickName!=null">nickName like '%${nickName}%'</if>
+		</where>
+	</select>
+	<!-- 회원 등록 -->
+	<insert id="insert" parameterType="MemberVO">
+		insert into member_tbl values
+		(#{userid}, #{password}, #{name}, #{nickName}, 0, 1)
+	</insert>
+	<!-- 수정 -->
+	<update id="update" parameterType="hashmap">
+		update member_tbl
+			<set>
+				<if test="nickName!=null">nickName=#{nickName},</if>
+				<if test="password!=null">password=#{password},</if>
+				<if test="lv!=null">lv=#{lv}</if>
+			</set>
+		where userid=#{userid}
+	</update>
+	<!-- 회원 탈퇴 -->
+	<delete id="delete" parameterType="string">
+		delete member_tbl where userid=#{userid}
+	</delete>
+	
+	<!-- member_authority 권한 부여 테이블 -->
+	
+	<!-- 권한 테이블 저장-->
+	<insert id="insertAuth" parameterType="hashmap">
+		insert into member_authority values (#{userid}, #{auth})
+	</insert>
+	
+	<!-- 권한 변경 시 -->
+	<update id="updateAuth" parameterType="hashmap">
+		update member_authority set auth=#{auth} where userid=#{userid}
+	</update>
+	
+	<!-- member_authority 권한 부여 테이블 -->
+		
+	<!-- authoritycode_tbl 인증코드 테이블 -->
+	
+	<!-- 인증코드 저장 -->
+	<insert id="insertAuthCode" parameterType="hashmap">
+		insert into authoritycode_tbl values (#{userid}, #{codeNo}, #{authCode}, 0)
+	</insert>
+	<!-- 인증코드 저장 -->
+	<update id="updateAuthCode" parameterType="hashmap">
+		update authoritycode_tbl
+			<set>
+				<if test="authCode!=null">authCode=#{authCode},</if>
+				<if test="wCount!=null">wCount=#{wCount}</if>
+			</set>
+		where userid=#{userid} and codeNo=#{codeNo}
+	</update>
+	<!-- 인증코드 조회 -->
+	<select id="selectAuthCode" parameterType="hashmap" resultType="hashmap">
+		select authcode, wCount from authoritycode_tbl where userid=#{userid} and codeNo=#{codeNo}
+	</select>
+	<!-- 인증코드 삭제 -->
+	<delete id="deleteAuthCode" parameterType="hashmap">
+		delete authoritycode_tbl where userid=#{userid} and codeNo=#{codeNo}
+	</delete>
+	<!-- authoritycode_tbl 인증코드 테이블 -->
+	
+</mapper>

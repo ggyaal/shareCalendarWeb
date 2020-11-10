@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.co.shareCal.dao.MemberCodeDAO">
+	<!-- 조회 -->
+	<select id="selectById" parameterType="string" resultType="MemberCodeVO">
+		select * from membercode_tbl where userid=#{userid}
+	</select>
+	<!-- 저장 -->
+	<insert id="insert" parameterType="MemberCodeVO">
+		insert into membercode_tbl
+			(userid, gender, phoneNo, birth, photo, zipCode, addr1, addr2, regDate)
+		values
+			(#{userid}, #{gender}, #{phoneNo, jdbcType=VARCHAR}, #{birth, jdbcType=VARCHAR}, #{photo, jdbcType=VARCHAR}, #{zipCode, jdbcType=VARCHAR}, #{addr1, jdbcType=VARCHAR}, #{addr2, jdbcType=VARCHAR}, SYSDATE )
+	</insert>
+	<!-- 수정 -->
+	<update id="update" parameterType="MemberCodeVO">
+		update membercode_tbl
+			<set>
+				<if test="phoneNo!=null">phoneNo=#{phoneNo},</if>
+				<if test="photo!=null">photo=#{photo},</if>
+				<if test="zipCode!=null">zipCode=#{zipCode}, addr1=#{addr1}, addr2=#{addr2}</if>
+			</set>
+		where userid=#{userid}
+	</update>
+
+	<!-- sortable -->
+	<!-- 조회 -->
+	<select id="selectSortByIt" parameterType="MemberSortVO" resultType="MemberSortVO">
+		select * from member_sortable 
+		<where>
+			userid=#{userid}
+			<if test="block!=null">and block=#{block}</if>
+		</where>
+	</select>
+	<!-- 저장 -->
+	<insert id="insertSort" parameterType="MemberSortVO">
+		insert into member_sortable values
+			(#{userid}, #{block}, #{contents})
+	</insert>
+	<!-- 수정 -->
+	<update id="updateSort" parameterType="MemberSortVO">
+		update member_sortable set contents=#{contents} where userid=#{userid} and block=#{block}
+	</update>
+	
+	<!-- sortable -->
+	
+</mapper>

@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+	<!-- MessageConverter 등록 -->
+	<bean id="xmlMessageConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter" />
+	<bean id="jsonMessageConverter"
+		class="org.springframework.http.converter.json.GsonHttpMessageConverter" />
+
+	<!-- 등록된 컨버터를 맵핑 -->
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<ref bean="jsonMessageConverter" />
+				<ref bean="xmlMessageConverter" />
+			</list>
+		</property>
+	</bean>
+	<!-- 프로퍼티 파일 사용 -->
+	<context:property-placeholder
+		location="classpath:db.properties, classpath:email.properties" />
+
+	<!-- 트랜젝션을 transactionManager를 이용하여 어노테이션으로 하겠다. -->
+	<tx:annotation-driven
+		transaction-manager="transactionManager" />
+
+	<!-- DB연결 -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${o.driver}" />
+		<property name="url" value="${o.url}" />
+		<property name="username" value="${o.username}" />
+		<property name="password" value="${o.password}" />
+	</bean>
+	<!-- sql logger -->
+	<bean id="dataSource-log4j"
+		class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="dataSource" />
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE" />
+				<property name="sqlPrefix" value="SQL:::" />
+			</bean>
+		</property>
+	</bean>	
+	<!-- Mybatis -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="typeAliasesPackage"
+			value="kr.co.shareCal.vo" />
+		<property name="mapperLocations"
+			value="classpath:/kr/co/shareCal/dao/*.xml" />
+		<property name="typeHandlers" ref="MybatisDateTypeHandler" />
+	</bean>
+	<!-- typeHandler 등록 -->
+	<bean id="MybatisDateTypeHandler" class="kr.co.shareCal.handler.MybatisDateTypeHandler" />
+
+	<!-- 이것을 등록하면 DaoImpl을 만들지 않고 인터페이스만 만들어도 된다. -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage"
+			value="kr.co.shareCal.dao" />
+		<property name="sqlSessionFactoryBeanName"
+			value="sqlSessionFactory" />
+	</bean>
+
+
+	<!-- 트랜젝션 관리자 추가 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	
+	<!-- Email 추가 시작 -->
+	<bean id="mailSender"
+		class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="${g.ehost}" />
+		<property name="port" value="${g.eport}" />
+		<property name="username" value="${g.username}" />
+		<property name="password" value="${g.password}" />
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.transport.protocol">smtp</prop>
+				<prop key="mail.debug">true</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- Email 추가 종료 -->
+
+
+	<!-- 시크리트 추가 시작 -->	
+	<security:http pattern="/nosecurity/**" security="none" />
+	<security:http pattern="/resources/**" security="none" />
+	<security:http pattern="/images/**" security="none" />
+	<security:http pattern="/js/**" security="none" />
+	<security:http pattern="/css/**" security="none" />
+	
+	<!-- 스프링 시크리트 암호화 객체 -->
+	<bean id="bcryptPasswordEncoder"
+		class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
+
+	<security:http auto-config="true">
+		<security:intercept-url pattern="/mn/**"
+			access="hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/op/**"
+			access="hasRole('ROLE_MEMBER') or hasRole('ROLE_ADMIN')" />
+		<security:intercept-url pattern="/mvp/**"
+			access="hasAnyRole('ROLE_MVP','ROLE_MEMBER','ROLE_ADMIN')" />
+		<security:intercept-url pattern="/user/**"
+			access="hasAnyRole('ROLE_USER','ROLE_MVP','ROLE_MEMBER','ROLE_ADMIN')" />
+		<security:intercept-url pattern="/mem/**"
+			access="hasAnyRole('ROLE_NONE','ROLE_USER','ROLE_MVP','ROLE_MEMBER','ROLE_ADMIN')" />
+		<security:intercept-url pattern="/none/**"
+			access="permitAll" />
+		<security:form-login login-page="/login"
+			default-target-url="/index" username-parameter="userid"
+			password-parameter="password" authentication-failure-url="/failLogin"
+			authentication-success-handler-ref="loginSuccessHandler"
+			always-use-default-target="false" />
+		<!-- access denied page -->
+		<security:access-denied-handler error-page="/403" />
+		<!-- 
+		<security:logout logout-success-url="/login?logout"  />
+		-->
+		<security:csrf />
+	</security:http>
+	
+	<!-- 로그인 성공시 세션에 회원 정보 등록 -->
+	<bean id="loginSuccessHandler"
+		class="kr.co.shareCal.security.LoginSuccessHandler">
+		<property name="successUrl" value="index" />
+	</bean>
+
+	<security:authentication-manager>
+		<security:authentication-provider>
+			<security:jdbc-user-service
+				data-source-ref="dataSource"
+				users-by-username-query="select userid, password, enabled from member_tbl where userid=?"
+				authorities-by-username-query="select userid as username, auth as AUTHORITY from member_authority where userid=?" />
+			<!-- 암호화해서 저장했을 경우 반드시 추가해야 한다.  -->	
+			<security:password-encoder ref="bcryptPasswordEncoder"/>				
+		</security:authentication-provider>
+	</security:authentication-manager>
+	<!-- 시크리트 추가 종료 -->
+	
+</beans>

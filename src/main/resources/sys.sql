@@ -1,0 +1,3 @@
+-- sys : 유저 만들고 권한주기
+CREATE USER newuser IDENTIFIED BY "123456";
+GRANT CONNECT, DBA, RESOURCE TO newuser;
